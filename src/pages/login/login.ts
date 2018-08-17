@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
 
-import { NavController } from 'ionic-angular';
+import { NavController, ToastController, LoadingController } from 'ionic-angular';
+import { RestProvider } from '../../providers/rest/rest';
 
-import { UserData } from '../../providers/user-data';
 
 import { UserOptions } from '../../interfaces/user-options';
 
@@ -18,16 +17,50 @@ import { SignupPage } from '../signup/signup';
 export class LoginPage {
   login: UserOptions = { username: '', password: '' };
   submitted = false;
+  loading: any;
+  loginData: { username: string, email: string, password: string } ={ username:'',email:'', password:''};
 
-  constructor(public navCtrl: NavController, public userData: UserData) { }
+  constructor(public navCtrl: NavController, public toastCtrl: ToastController,
+    public loadingCtrl: LoadingController,
+    public restProvider: RestProvider,) { }
 
-  onLogin(form: NgForm) {
-    this.submitted = true;
+  doLogin() {
+    this.showLoader();
+    this.restProvider.login(this.loginData).subscribe(result => {
+      this.loading.dismiss();
+      localStorage.setItem('token',this.loginData.username);
+      this.presentToast(result);
+      this.navCtrl.setRoot(TabsPage);
+    }, err => {
+      this.loading.dismiss();
+      this.presentToast(err.status + err.statusText +err.ok);
+      
+    
+      
+    });
+  }
 
-    if (form.valid) {
-      this.userData.login(this.login.username);
-      this.navCtrl.push(TabsPage);
-    }
+  showLoader(){
+    this.loading = this.loadingCtrl.create({
+        content: 'Authenticating...'
+    });
+
+    this.loading.present();
+  }
+
+  presentToast(msg) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      duration: 3000,
+      position: 'bottom',
+      dismissOnPageChange: true
+    });
+
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
+    });
+
+    toast.present();
   }
 
   onSignup() {

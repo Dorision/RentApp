@@ -5,11 +5,11 @@
     </button>
 
     <ion-segment [(ngModel)]="segment" (ionChange)="updateSchedule()">
-      <ion-segment-button value="all">
-        All
+      <ion-segment-button value="rent">
+        RENT
       </ion-segment-button>
       <ion-segment-button value="favorites">
-        Favorites
+        BUY
       </ion-segment-button>
     </ion-segment>
 
@@ -34,41 +34,37 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-list #scheduleList [hidden]="shownSessions === 0">
+   <ion-card *ngFor="let item of products">
 
-    <ion-item-group *ngFor="let group of groups" [hidden]="group.hide">
+    <ion-item>
+      
+      <h2>{{item.user}}</h2>
+      <p>{{item.name}}</p>
+    </ion-item>
 
-      <ion-item-divider sticky>
-        <ion-label>
-          {{group.time}}
-        </ion-label>
-      </ion-item-divider>
+    <img [src]="item.product_pic">
 
-      <ion-item-sliding *ngFor="let session of group.sessions" #slidingItem [attr.track]="session.tracks[0] | lowercase" [hidden]="session.hide">
-
-        <button ion-item (click)="goToSessionDetail(session)">
-          <h3>{{session.name}}</h3>
-          <p>
-            {{session.timeStart}} &mdash;
-            {{session.timeEnd}}:
-            {{session.location}}
-          </p>
-        </button>
-
-        <ion-item-options>
-          <button ion-button color="favorite" (click)="addFavorite(slidingItem, session)" *ngIf="segment === 'all'">
-            Favorite
+    <ion-row>
+      <ion-col>
+        <button ion-button color="primary" clear small icon-start>
+            <ion-icon name='arrow-down'></ion-icon>
+            save
           </button>
-          <button ion-button color="danger" (click)="removeFavorite(slidingItem, session, 'Remove Favorite')" *ngIf="segment === 'favorites'">
-            Remove
+      </ion-col>
+      <ion-col>
+        <button ion-button color="primary" clear small icon-start (click)="goto()">
+            <ion-icon name='arrow-up'></ion-icon>
+            Rent
           </button>
-        </ion-item-options>
-
-      </ion-item-sliding>
-
-    </ion-item-group>
-
-  </ion-list>
+      </ion-col>
+      <ion-col center text-center>
+        <ion-note>
+          11h ago
+        </ion-note>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+  
 
   <ion-list-header [hidden]="shownSessions > 0">
       No Sessions Found

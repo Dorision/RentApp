@@ -13,6 +13,7 @@ import { UserData } from '../../providers/user-data';
 
 import { SessionDetailPage } from '../session-detail/session-detail';
 import { ScheduleFilterPage } from '../schedule-filter/schedule-filter';
+import { RestProvider } from '../../providers/rest/rest';
 
 
 @Component({
@@ -33,6 +34,7 @@ export class SchedulePage {
   shownSessions: any = [];
   groups: any = [];
   confDate: string;
+  products:any = []
 
   constructor(
     public alertCtrl: AlertController,
@@ -43,20 +45,24 @@ export class SchedulePage {
     public toastCtrl: ToastController,
     public confData: ConferenceData,
     public user: UserData,
+    public restProvider: RestProvider,
   ) {}
 
   ionViewDidLoad() {
     this.app.setTitle('Schedule');
     this.updateSchedule();
+    this.getProducts();
   }
 
   updateSchedule() {
     // Close any open sliding items when the schedule updates
+    this.getProducts();
     this.scheduleList && this.scheduleList.closeSlidingItems();
 
     this.confData.getTimeline(this.dayIndex, this.queryText, this.excludeTracks, this.segment).subscribe((data: any) => {
       this.shownSessions = data.shownSessions;
       this.groups = data.groups;
+      
     });
   }
 
@@ -78,6 +84,14 @@ export class SchedulePage {
     // and pass in the session data
 
     this.navCtrl.push(SessionDetailPage, { sessionId: sessionData.id, name: sessionData.name });
+  }
+
+  getProducts() {
+    this.restProvider.getProduct()
+    .then(data => {
+      this.products = data;
+      console.log(this.products);
+    });
   }
 
   addFavorite(slidingItem: ItemSliding, sessionData: any) {
@@ -148,7 +162,15 @@ export class SchedulePage {
     loading.present();
   }
 
+  goto() {
+    
+    this.navCtrl.push('RentPage', {
+      
+    });
+  }
+
   doRefresh(refresher: Refresher) {
+    this.getProducts();
     this.confData.getTimeline(this.dayIndex, this.queryText, this.excludeTracks, this.segment).subscribe((data: any) => {
       this.shownSessions = data.shownSessions;
       this.groups = data.groups;

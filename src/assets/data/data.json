@@ -328,16 +328,16 @@
 
 
   "map": [{
-    "name": "Monona Terrace Convention Center",
-    "lat": 43.071584,
-    "lng": -89.380120,
+    "name": "John Doe - Tables",
+    "lat": -26.1382144,
+    "lng": 28.0477696,
     "center": true
   }, {
-    "name": "Ionic HQ",
-    "lat": 43.074395,
-    "lng": -89.381056
+    "name": "Gundo - White chairs",
+    "lat": -26.1382144,
+    "lng": 28.198042
   }, {
-    "name": "Afterparty - Brocach Irish Pub",
+    "name": "Jane Doe - White",
     "lat": 43.07336,
     "lng": -89.38335
   }]
